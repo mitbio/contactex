@@ -1,0 +1,70 @@
+/*
+ * This stylesheet is ONLY for editor.html
+ * It assumes styles.css is already loaded for :root variables.
+ */
+
+body {
+  /* Use the same background as our main app */
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* No scrolling on the main page */
+}
+
+.editor-nav {
+  height: 65px;
+  width: 100%;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.back-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--accent-primary);
+}
+
+.back-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.editor-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* * This is the magic:
+ * Make the editor container fill all remaining space
+ * BELOW the 65px tall navigation bar.
+ */
+#editor-container {
+  width: 100%;
+  height: calc(100vh - 65px);
+}

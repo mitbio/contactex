@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact-X Dashboard</title>
+  <meta name="viewport" content="width=1280">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <div id="app-overlay" class="hidden"></div>
+
+  <div class="app-layout">
+    <aside class="sidebar sidebar-left" id="sidebar-left">
+      <div>
+        <div class="logo">Contact<span class="accent">-X</span></div>
+        <nav class="nav">
+          <a href="#" class="nav-link active" data-view="dashboard"><span>??</span> Dashboard</a>
+          <a href="#" class="nav-link" data-view="leads"><span>??</span> My Leads</a>
+          <a href="#" class="nav-link" data-view="campaigns"><span>??</span> Campaigns</a>
+        </nav>
+        <div class="projects">
+          <div class="projects-section">
+            <div class="projects-header" data-toggle="crm">
+              <span>CRM</span>
+              <span class="chevron" id="chevron-crm">&#9654;</span>
+            </div>
+            <ul class="projects-list" id="projects-crm">
+              <li>Leads</li>
+              <li>Opportunities</li>
+            </ul>
+          </div>
+          <div class="projects-section">
+            <div class="projects-header" data-toggle="marketing">
+              <span>Marketing and PM</span>
+              <span class="chevron" id="chevron-marketing">&#9654;</span>
+            </div>
+            <ul class="projects-list" id="projects-marketing">
+              <li>Email Campaigns</li>
+              <li>Tasks</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="user-profile">
+        <span class="avatar">G</span>
+        <div class="user-info">
+          <span class="user-name">Gemini</span>
+          <span class="user-email">ai@contact-x.com</span>
+        </div>
+        <span class="settings-icon">??</span>
+      </div>
+    </aside>
+
+    <main class="main-content" id="main-content">
+      <div class="main-view" id="dashboard-view">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">Leads Captured (7 Days)</span>
+            <span class="kpi-value">128</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Emails Sent</span>
+            <span class="kpi-value">1,540</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Reply Rate</span>
+            <span class="kpi-value">21%</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">New High-Score Leads</span>
+            <span class="kpi-value">17</span>
+          </div>
+        </div>
+        <div class="recent-activity">
+          <div class="recent-title">Recent Activity</div>
+          <ul class="recent-list">
+            <li><span class="avatar">JS</span> New lead: John S. from Acme Inc. <span class="time">5m ago</span></li>
+            <li><span class="avatar">ER</span> Elizabeth Reynolds mentioned you <span class="time">10m ago</span></li>
+            <li><span class="avatar">SW</span> Sonya Wolf joined Next Platform <span class="time">16m ago</span></li>
+            <li><span class="avatar">KO</span> Kenny Osinski: Hi everyone! <span class="time">1h ago</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="main-view hidden" id="leads-view">
+        <div class="leads-header">
+          <h2>My Leads</h2>
+          <div class="leads-controls">
+            <input type="text" class="search-bar" placeholder="Search leads...">
+            <button class="glow-btn" type="button">
+              <span>Filter</span>
+            </button>
+            <button class="glow-btn" type="button">
+              <span>Add Lead</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 9" class="arrow-icon"><path fill="currentColor" fill-rule="evenodd" d="m12.495 0 4.495 4.495-4.495 4.495-.99-.99 2.805-2.805H0v-1.4h14.31L11.505.99z" clip-rule="evenodd"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="leads-table-wrapper">
+          <table class="leads-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Lead Score</th>
+                <th>Status</th>
+                <th>Date Added</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="lead-row" data-lead="1">
+                <td class="lead-name accent-hover">John Smith</td>
+                <td>Acme Inc.</td>
+                <td>
+                  <div class="score-bar"><div class="score-fill" style="width:80%"></div></div> 80
+                </td>
+                <td><span class="status-tag status-high">High Priority</span></td>
+                <td>2025-10-18</td>
+              </tr>
+              <tr class="lead-row" data-lead="2">
+                <td class="lead-name accent-hover">Elizabeth Reynolds</td>
+                <td>Next Platform</td>
+                <td>
+                  <div class="score-bar"><div class="score-fill" style="width:60%"></div></div> 60
+                </td>
+                <td><span class="status-tag status-contacted">Contacted</span></td>
+                <td>2025-10-20</td>
+              </tr>
+              <tr class="lead-row" data-lead="3">
+                <td class="lead-name accent-hover">Sonya Wolf</td>
+                <td>BetaTech</td>
+                <td>
+                  <div class="score-bar"><div class="score-fill" style="width:92%"></div></div> 92
+                </td>
+                <td><span class="status-tag status-new">New</span></td>
+                <td>2025-10-21</td>
+              </tr>
+              <tr class="lead-row" data-lead="4">
+                <td class="lead-name accent-hover">Kenny Osinski</td>
+                <td>Freelynk</td>
+                <td>
+                  <div class="score-bar"><div class="score-fill" style="width:20%"></div></div> 20
+                </td>
+                <td><span class="status-tag status-low">Low Priority</span></td>
+                <td>2025-10-15</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+	  <div class="main-view hidden" id="campaigns-view">
+        
+        <div class="leads-header"> <h2>Email Campaigns</h2>
+          <div class="leads-controls">
+            <button class="glow-btn" id="create-template-btn" type="button">
+              <span>Create Template</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height: 18px; margin-left: 8px;"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="template-tabs">
+          <button class="template-tab-btn active" data-tab="your-templates">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height: 16px; margin-right: 8px;"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+            Your Saved Templates
+          </button>
+          <button class="template-tab-btn" data-tab="library-templates">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height: 16px; margin-right: 8px;"><path d="m4 19.5 1.5-1.5 2.5 2.5L4 19.5z"/><path d="m21.5 4-2.5 2.5 1.5 1.5L21.5 4z"/><path d="M9 15l-1-1 4-4 1 1-4 4z"/><path d="m5 9 1 1 4-4-1-1-4 4z"/><path d="m14 4 1 1 4-4-1-1-4 4z"/><path d="m10 19 4-4 1 1-4 4-1-1z"/></svg>
+            Contact-X Library
+          </button>
+        </div>
+
+        <div class="template-content">
+          <div class="template-panel active" id="your-templates">
+            <div class="template-grid">
+              <div class="template-card">
+                <div class="card-preview">
+                  <span class="preview-text">My Cold Outreach v1</span>
+                </div>
+                <div class="card-footer">
+                  <span class="card-title">My Cold Outreach v1</span>
+                  <span class="card-date">Edited 2 days ago</span>
+                </div>
+              </div>
+              <div class="template-card">
+                <div class="card-preview">
+                  <span class="preview-text">Follow-up Sequence</span>
+                </div>
+                <div class="card-footer">
+                  <span class="card-title">Follow-up Sequence</span>
+                  <span class="card-date">Edited 1 week ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="template-panel" id="library-templates">
+            <div class="template-grid">
+              <div class="template-card">
+                <div class="card-preview">
+                  <span class="preview-text">Intro & Demo Request</span>
+                </div>
+                <div class="card-footer">
+                  <span class="card-title">Intro & Demo Request</span>
+                  <span class="card-tag">Library</span>
+                </div>
+              </div>
+              <div class="template-card">
+                <div class="card-preview">
+                  <span class="preview-text">Post-Meeting Follow Up</span>
+                </div>
+                <div class="card-footer">
+                  <span class="card-title">Post-Meeting Follow Up</span>
+                  <span class="card-tag">Library</span>
+                </div>
+              </div>
+              <div class="template-card">
+                <div class="card-preview">
+                  <span class="preview-text">Quick Check-In</span>
+                </div>
+                <div class="card-footer">
+                  <span class="card-title">Quick Check-In</span>
+                  <span class="card-tag">Library</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <aside class="sidebar sidebar-right" id="sidebar-right">
+      <div class="inbox-tabs">
+        <button class="inbox-tab active" data-tab="all">All</button>
+        <button class="inbox-tab" data-tab="tasks">Tasks <span class="tab-badge">2</span></button>
+        <button class="inbox-tab" data-tab="chat">Chat</button>
+      </div>
+      <ul class="inbox-list" id="inbox-list">
+        <li>
+          <span class="avatar">ER</span>
+          <div class="inbox-msg">
+            <span class="msg-title">Elizabeth Reynolds mentioned you</span>
+            <span class="msg-meta">10 min ago · Marketing and PM</span>
+          </div>
+        </li>
+        <li>
+          <span class="avatar">SW</span>
+          <div class="inbox-msg">
+            <span class="msg-title">Sonya Wolf joined Next Platform project</span>
+            <span class="msg-meta">16 min ago · Next Platform</span>
+          </div>
+        </li>
+        <li>
+          <span class="avatar">KO</span>
+          <div class="inbox-msg">
+            <span class="msg-title">Kenny Osinski: Hi everyone! Let’s discuss…</span>
+            <span class="msg-meta">1 hour ago · General</span>
+          </div>
+        </li>
+        <li>
+          <span class="avatar">AZ</span>
+          <div class="inbox-msg">
+            <span class="msg-title">Alexey Zinovyev added new tag to Issues</span>
+            <span class="msg-meta">3 hours ago · CRM</span>
+          </div>
+        </li>
+        <li>
+          <span class="avatar">BC</span>
+          <div class="inbox-msg">
+            <span class="msg-title">Billy Christiansen changed status to In Progress</span>
+            <span class="msg-meta">4 hours ago · Marketing and PM</span>
+          </div>
+        </li>
+      </ul>
+    </aside>
+
+    <div class="slideout-panel" id="slideout-panel">
+      <button class="close-btn" id="close-slideout">&times;</button>
+      <div class="slideout-content">
+        <h3>John Smith</h3>
+        <div class="slideout-section">
+          <span class="section-title">Contact Info</span>
+          <div>Email: john.smith@acme.com</div>
+          <div>Company: Acme Inc.</div>
+          <div>Phone: +1 555 123 9876</div>
+        </div>
+        <div class="slideout-section">
+          <span class="section-title">Notes</span>
+          <div>
+            <textarea rows="3" style="width:100%;" placeholder="Add notes...">Interested in demo, follow up next week.</textarea>
+          </div>
+        </div>
+        <div class="slideout-section">
+          <span class="section-title">Activity History</span>
+          <ul class="activity-history">
+            <li><span class="dot"></span> Sent follow-up email <span class="time">2 days ago</span></li>
+            <li><span class="dot"></span> Lead captured via webform <span class="time">4 days ago</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

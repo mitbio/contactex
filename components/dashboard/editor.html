@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact-X Template Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <link rel="stylesheet" href="editor.css">
+  
+</head>
+<body>
+
+  <nav class="editor-nav">
+    <div class="nav-left">
+      <a href="index.html" class="back-btn" title="Back to Dashboard">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <span>Back to Campaigns</span>
+      </a>
+      <span class="editor-title">New Template</span>
+    </div>
+    <div class="nav-right">
+      <button class="glow-btn" id="save-template-btn" type="button">
+        <span>Save Template</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height: 18px; margin-left: 8px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div id="editor-container"></div>
+
+  <script src="https://editor.unlayer.com/embed.js"></script>
+  
+  <script src="editor.js"></script>
+  
+</body>
+</html>
