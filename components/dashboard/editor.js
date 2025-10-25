@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     theme: 'dark',
   });
 
-  // --- NEW: Wait for the editor to be 100% ready ---
+  // --- Wait for the editor to be 100% ready ---
   unlayer.addEventListener('editor:ready', () => {
     console.log('Unlayer editor is now ready!');
 
@@ -22,16 +22,26 @@ window.addEventListener('DOMContentLoaded', () => {
       saveBtn.disabled = true;
       saveBtn.querySelector('span').textContent = 'Saving...';
 
-      // This will now work because the editor is ready
-      unlayer.exportJson((data) => {
-        // 'data' is the full JSON object of the template
-        console.log('Template JSON:', data);
+      // ======================================================
+      //
+      // HERE IS THE FIX:
+      // We are changing 'exportJson' to 'exportHtml'.
+      // The 'data' object will contain BOTH html and json (as 'design').
+      //
+      // ======================================================
+      unlayer.exportHtml((data) => {
+        const designJson = data.design; // This is the JSON we want
+        const html = data.html;       // This is the exported HTML
+
+        // 'data' is the full object
+        console.log('Template Data (HTML and JSON):', data);
+        console.log('Template JSON:', designJson);
         
         // This is our hook for Stage 3 (Saving to Firebase)
         alert('Template saved! Check the console for the JSON output.');
 
         // In Stage 3, we will replace the alert with:
-        // await saveTemplateToFirebase(data);
+        // await saveTemplateToFirebase(designJson);
         
         // Re-enable the button
         saveBtn.disabled = false;
