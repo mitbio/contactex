@@ -1,47 +1,61 @@
+// editor.js
+
+// Import our database connection from our new config file
+import { db } from './firebase-config.js';
+// Import the functions we need to write data
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+/**
+ * Saves the Unlayer design JSON to our Firestore database.
+ * @param {object} designJson - The template JSON from Unlayer
+ */
+async function saveTemplateToFirebase(designJson) {
+  try {
+    // 'user_templates' is the name of our new collection
+    const docRef = await addDoc(collection(db, "user_templates"), {
+      design: designJson, // The Unlayer design object
+      name: "Untitled Template", // We'll add a way to name this later
+      createdAt: serverTimestamp() // Let Firebase add the time
+    });
+    
+    console.log("Template saved with ID: ", docRef.id);
+    alert("Template saved successfully!");
+    
+    // After saving, go back to the dashboard
+    window.location.href = 'index.html?view=campaigns';
+
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    alert("Error: Could not save template. See console for details.");
+  }
+}
+
 // Wait for the page to load
 window.addEventListener('DOMContentLoaded', () => {
 
-  // --- Initialize Unlayer Editor ---
   unlayer.init({
     id: 'editor-container',
     projectId: '280840', // This is correct
     displayMode: 'email',
-    theme: 'dark',
+    // We leave 'theme' out, as it's a paid feature
   });
 
-  // --- Wait for the editor to be 100% ready ---
   unlayer.addEventListener('editor:ready', () => {
     console.log('Unlayer editor is now ready!');
-
-    // Get the save button
     const saveBtn = document.getElementById('save-template-btn');
 
-    // --- Save Button Logic (Moved inside the 'ready' event) ---
-    saveBtn.addEventListener('click', () => {
-      // Disable the button to prevent double-clicks
+    saveBtn.addEventListener('click', async () => {
       saveBtn.disabled = true;
       saveBtn.querySelector('span').textContent = 'Saving...';
 
-      // ======================================================
-      //
-      // HERE IS THE FIX:
-      // We are changing 'exportJson' to 'exportHtml'.
-      // The 'data' object will contain BOTH html and json (as 'design').
-      //
-      // ======================================================
-      unlayer.exportHtml((data) => {
+      unlayer.exportHtml(async (data) => {
         const designJson = data.design; // This is the JSON we want
-        const html = data.html;       // This is the exported HTML
 
-        // 'data' is the full object
-        console.log('Template Data (HTML and JSON):', data);
-        console.log('Template JSON:', designJson);
-        
-        // This is our hook for Stage 3 (Saving to Firebase)
-        alert('Template saved! Check the console for the JSON output.');
-
-        // In Stage 3, we will replace the alert with:
-        // await saveTemplateToFirebase(designJson);
+        //
+        // --- THIS IS THE CHANGE ---
+        // Instead of alert(), we call our new Firebase function
+        //
+        await saveTemplateToFirebase(designJson);
         
         // Re-enable the button
         saveBtn.disabled = false;
@@ -49,5 +63,4 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
-
 });
