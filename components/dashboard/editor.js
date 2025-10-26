@@ -11,11 +11,14 @@ import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/fir
  */
 async function saveTemplateToFirebase(designJson) {
   try {
-    // 'user_templates' is the name of our new collection
+
+    const sanitizedDesign = JSON.parse(JSON.stringify(designJson));
+
+    // Now we save the 'sanitizedDesign' object instead
     const docRef = await addDoc(collection(db, "user_templates"), {
-      design: designJson, // The Unlayer design object
-      name: "Untitled Template", // We'll add a way to name this later
-      createdAt: serverTimestamp() // Let Firebase add the time
+      design: sanitizedDesign, // Use the sanitized object
+      name: "Untitled Template",
+      createdAt: serverTimestamp()
     });
     
     console.log("Template saved with ID: ", docRef.id);
@@ -25,8 +28,13 @@ async function saveTemplateToFirebase(designJson) {
     window.location.href = 'index.html?view=campaigns';
 
   } catch (e) {
-    console.error("Error adding document: ", e);
+    console.error("Error adding document: ", e); // This is where your error appeared
     alert("Error: Could not save template. See console for details.");
+    
+    // Re-enable the button *if* an error happens
+    const saveBtn = document.getElementById('save-template-btn');
+    saveBtn.disabled = false;
+    saveBtn.querySelector('span').textContent = 'Save Template';
   }
 }
 
