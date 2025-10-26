@@ -28,3 +28,4 @@ const app = initializeApp(firebaseConfig);
 // Export the Firestore database instance
 // We will import 'db' in our other files
 export const db = getFirestore(app);
+export const auth = getAuth(app);
