@@ -460,16 +460,29 @@
     let isSignUp = true; // Start in "Get Started" (Sign Up) mode
 
     // --- Step 6: Auth Success Handler (THE GOAL!) ---
+   // login.html (inside the <script> block)
+
+    // --- NEW: Helper function for safe storage ---
+    function safeSetStorage(key, value) {
+      try {
+        localStorage.setItem(key, value);
+      } catch (e) {
+        console.warn("LocalStorage is not available in this environment.", e);
+      }
+    }
+
+    // --- Step 6: Auth Success Handler (MODIFIED) ---
     function handleAuthSuccess(user) {
       console.log("Auth success! User:", user.uid);
-      // **This is the most important part:**
-      // We save the User ID (uid) to localStorage.
-      // Our dashboard (index.html) will read this to know who is logged in.
-      localStorage.setItem('contactx_user_uid', user.uid);
+      
+      // ** MODIFIED: Use the safe function **
+      safeSetStorage('contactx_user_uid', user.uid);
       
       // Redirect to the main app dashboard
       window.location.href = 'index.html'; 
     }
+    
+// ... (the rest of your login.html script stays the same) ...
 
     // --- Step 7: Error Handler ---
     function showAuthError(message) {
