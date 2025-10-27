@@ -1,10 +1,11 @@
 // main.js
 
-// --- MODIFIED: Import 'auth' and 'signOut' ---
-import { db, auth } from './firebase-config.js';
-import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { collection, query, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// Import our *finished* db and auth objects from the config
+import { db, auth } from './firebase-config.js'; 
 
+// Import only the *functions* we need from the SDK
+import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"; 
+import { collection, query, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // --- Global Selectors (Unchanged) ---
 const appOverlay = document.getElementById('app-overlay');
@@ -167,3 +168,4 @@ if (logoutButton) {
     }
   });
 }
+
