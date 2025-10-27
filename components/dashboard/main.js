@@ -1,50 +1,38 @@
 // main.js
 
-// --- 1. IMPORTS ---
-// Import our finished db and auth objects from the config
+// --- (Imports are unchanged) ---
 import { db, auth } from './firebase-config.js'; 
-
-// Import only the *functions* we need from the SDK
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"; 
 import { collection, query, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-// --- 2. GLOBAL SELECTORS ---
+// --- (Global Selectors are unchanged) ---
 const appOverlay = document.getElementById('app-overlay');
-const slideoutPanel = document.getElementById('slideout-panel');
-const closeBtn = document.getElementById('close-slideout');
-const createTemplateBtn = document.getElementById('create-template-btn');
+// ... (all other selectors)
 const logoutButton = document.getElementById('logout-button');
-const userProfile = document.querySelector('.user-profile');
-const userNameEl = document.querySelector('.user-name');
-const userEmailEl = document.querySelector('.user-email');
 const avatarEl = document.querySelector('.user-profile .avatar');
 
-
-// --- 3. GLOBAL STATE ---
+// --- (Global State is unchanged) ---
 let currentUserId = null;
 
+// --- (Helper Functions are unchanged) ---
+function safeSetStorage(key, value) { /* ... */ }
+function safeRemoveStorage(key) { /* ... */ }
+// ... (Make sure your safe storage functions are here)
 
-// --- 4. HELPER FUNCTIONS ---
+// --- (open/closeSlideout functions are unchanged) ---
+function openSlideout(data) { /* ... */ }
+function closeSlideout() { /* ... */ }
 
-// "Safe" storage functions to avoid errors in Guest Mode
-function safeSetStorage(key, value) {
-  try {
-    localStorage.setItem(key, value);
-  } catch (e) {
-    console.warn("LocalStorage is not available in this environment.", e);
-  }
-}
+// --- (updateProfileUI is unchanged) ---
+function updateProfileUI(user) { /* ... */ }
 
-function safeRemoveStorage(key) {
-  try {
-    localStorage.removeItem(key);
-  } catch (e) {
-    console.warn("LocalStorage is not available in this environment.", e);
-  }
-}
+// --- (handleInitialView is unchanged) ---
+function handleInitialView() { /* ... */ }
 
-// --- 5. CORE APP FUNCTIONS ---
+
+// =========================================================
+// --- CORE APP FUNCTIONS (MODIFIED) ---
+// =========================================================
 
 /**
  * Fetches templates from Firestore *for the logged-in user*.
@@ -52,9 +40,7 @@ function safeRemoveStorage(key) {
 async function loadUserTemplates() {
   const grid = document.querySelector('#your-templates .template-grid');
   if (!grid) return;
-
   if (!currentUserId) {
-    console.error("No user ID found. Cannot load templates.");
     grid.innerHTML = `<p style="color: #ff8181;">Error: Not logged in.</p>`;
     return;
   }
@@ -75,6 +61,7 @@ async function loadUserTemplates() {
       const template = doc.data();
       const templateId = doc.id;
       const date = template.createdAt ? new Date(template.createdAt.seconds * 1000).toLocaleDateString() : 'Just now';
+      
       const card = document.createElement('div');
       card.className = 'template-card';
       card.dataset.id = templateId;
@@ -87,9 +74,16 @@ async function loadUserTemplates() {
           <span class="card-date">Saved: ${date}</span>
         </div>
       `;
+      
+      // --- MODIFIED: Added click listener ---
       card.addEventListener('click', () => {
-        console.log(`Clicked template ${templateId}`);
+        console.log(`Loading saved template: ${templateId}`);
+        // 1. Save the design to localStorage
+        safeSetStorage('contactx_template_to_load', JSON.stringify(template.design));
+        // 2. Go to the editor
+        window.location.href = 'editor.html';
       });
+
       grid.appendChild(card);
     });
   } catch (e) {
@@ -99,78 +93,60 @@ async function loadUserTemplates() {
 }
 
 /**
- * Opens the lead detail slideout panel.
+ * --- NEW: Loads hard-coded templates into the Library tab ---
  */
-function openSlideout(data) {
-  slideoutPanel.style.display = 'block';
-  appOverlay.classList.remove('hidden');
-  gsap.to(slideoutPanel, { right: 0, duration: 0.45, ease: "power2.out" });
-  gsap.to(appOverlay, { opacity: 0.7, duration: 0.45, ease: "power2.out" });
-  slideoutPanel.classList.add('open');
-}
+function loadLibraryTemplates() {
+  const grid = document.querySelector('#library-templates .template-grid');
+  if (!grid) return;
 
-/**
- * Closes the lead detail slideout panel.
- */
-function closeSlideout() {
-  gsap.to(slideoutPanel, {
-    right: -420, duration: 0.4, ease: "power2.in", 
-    onComplete: () => {
-      slideoutPanel.classList.remove('open');
-      slideoutPanel.style.display = 'none';
-    }
+  // Clear any static placeholders
+  grid.innerHTML = '';
+
+  // Get our library (defined at the bottom of this file)
+  LIBRARY_TEMPLATES.forEach(template => {
+    const card = document.createElement('div');
+    card.className = 'template-card';
+    card.innerHTML = `
+      <div class.card-preview" style="padding: 0; overflow: hidden;">
+        <img src="${template.thumbnailUrl}" alt="${template.name}" style="width:100%; height:100%; object-fit: cover;"/>
+      </div>
+      <div class.card-footer">
+        <span class="card-title">${template.name}</span>
+        <span class="card-tag">Library</span>
+      </div>
+    `;
+    
+    // Add click listener
+    card.addEventListener('click', () => {
+      console.log(`Loading library template: ${template.name}`);
+      // 1. Save the design to localStorage
+      // We pass the *entire* template object as it contains the design
+      safeSetStorage('contactx_template_to_load', JSON.stringify(template.design));
+      // 2. Go to the editor
+      window.location.href = 'editor.html';
+    });
+
+    grid.appendChild(card);
   });
-  gsap.to(appOverlay, {
-    opacity: 0, duration: 0.4, ease: "power2.in",
-    onComplete: () => {
-      appOverlay.classList.add('hidden');
-    }
-  });
 }
 
-/**
- * Updates the user profile UI with the user's data.
- */
-function updateProfileUI(user) {
-  if (userNameEl) userNameEl.textContent = user.displayName || 'New User';
-  if (userEmailEl) userEmailEl.textContent = user.email;
-  if (avatarEl && user.displayName) {
-    avatarEl.textContent = user.displayName.charAt(0).toUpperCase();
-  } else if (avatarEl && user.email) {
-    avatarEl.textContent = user.email.charAt(0).toUpperCase();
-  }
-}
 
-/**
- * Handles the initial page load logic (e.g., deep linking to a view)
- */
-function handleInitialView() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('view') === 'campaigns') {
-    document.querySelector('.nav-link[data-view="campaigns"]').click();
-  } else {
-    // Default to collapsing sidebars
-    document.querySelectorAll('.projects-header').forEach(header => header.click());
-  }
-}
-
-// --- 6. MAIN AUTH CHECK (The "Brain" of the page) ---
+// =========================================================
+// --- MAIN AUTH CHECK (MODIFIED) ---
+// =========================================================
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User IS logged in.
     console.log("User is logged in:", user.uid);
     currentUserId = user.uid;
     safeSetStorage('contactx_user_uid', user.uid);
-    
-    // Update the UI
     updateProfileUI(user);
-    
-    // Handle initial page view
     handleInitialView();
+    
+    // --- NEW: Load library templates once on startup ---
+    loadLibraryTemplates();
 
   } else {
-    // User is NOT logged in. Redirect to login.
     console.log("No user logged in, redirecting to login page.");
     safeRemoveStorage('contactx_user_uid'); 
     window.location.href = 'login.html';
@@ -178,27 +154,12 @@ onAuthStateChanged(auth, (user) => {
 });
 
 
-// --- 7. ALL EVENT LISTENERS ---
-// This is where all the "clicking" comes from.
+// =========================================================
+// --- ALL EVENT LISTENERS ---
+// =========================================================
 
-// Sidebar Projects Collapse
-document.querySelectorAll('.projects-header').forEach(header => {
-  header.addEventListener('click', () => {
-    const key = header.getAttribute('data-toggle');
-    const list = document.getElementById('projects-' + key);
-    const chevron = document.getElementById('chevron-' + key);
-    if (!list || !chevron) return;
-    
-    const collapsed = list.classList.toggle('collapsed');
-    gsap.to(chevron, { rotation: collapsed ? 0 : 90, duration: 0.3, transformOrigin: "50% 50%" });
-    if (collapsed) {
-      gsap.to(list, { maxHeight: 0, opacity: 0, duration: 0.35, ease: "power2.inOut" });
-    } else {
-      list.style.maxHeight = 'auto'; 
-      gsap.fromTo(list, { maxHeight: 0, opacity: 0 }, { maxHeight: list.scrollHeight, opacity: 1, duration: 0.35, ease: "power2.inOut" });
-    }
-  });
-});
+// --- (Sidebar Projects, Slideout, Keydown, Create Button, Logout Button... all stay the same) ---
+// ... (paste all your existing event listeners here) ...
 
 // Main Navigation
 document.querySelectorAll('.nav-link').forEach(link => {
@@ -207,81 +168,45 @@ document.querySelectorAll('.nav-link').forEach(link => {
     const viewId = link.getAttribute('data-view');
     if (!viewId) return;
     
+    // MODIFIED: We now *also* load templates when this view is clicked
     if (viewId === 'campaigns') {
       loadUserTemplates();
+      // We don't need to reload the library, it's static.
     }
+    // ... (rest of the nav code is the same)
     if (link.classList.contains('active')) return;
-    
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     link.classList.add('active');
-    
     const newView = document.getElementById(viewId + '-view');
     const currentView = document.querySelector('.main-view:not(.hidden)');
-    
     if (currentView) {
-      gsap.to(currentView, {
-        opacity: 0, y: -10, duration: 0.2, ease: "power1.in",
-        onComplete: () => {
-          currentView.classList.add('hidden');
-          currentView.style.y = 0;
-        }
-      });
+      gsap.to(currentView, { /* ... */ });
     }
-    
     if (newView) {
       newView.classList.remove('hidden');
-      gsap.fromTo(newView, 
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.3, ease: "power1.out", delay: currentView ? 0.15 : 0 }
-      );
+      gsap.fromTo(newView, { /* ... */ });
     }
   });
 });
 
-// Slideout Panel
-if (closeBtn) closeBtn.addEventListener('click', closeSlideout);
-if (appOverlay) appOverlay.addEventListener('click', closeSlideout);
+// --- (Ensure all other listeners are present: slideout, keydown, etc.) ---
 
-document.querySelectorAll('.lead-row').forEach(row => {
-  row.addEventListener('click', () => {
-    openSlideout(); // We'll pass lead data here later
-  });
-});
 
-window.addEventListener('keydown', e => {
-  if (e.key === "Escape" && slideoutPanel.classList.contains('open')) {
-    closeSlideout();
+// =========================================================
+// --- NEW: PRE-BUILT TEMPLATE LIBRARY DATA ---
+// =========================================================
+// I've created two basic templates for you.
+// I got the thumbnail URLs from Unlayer's own examples.
+
+const LIBRARY_TEMPLATES = [
+  {
+    name: "Simple Cold Outreach",
+    thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1602058334812-Simple.png",
+    design: {"counters":{"u_column":1,"u_row":2,"u_content_text":2,"u_content_button":1},"body":{"rows":[{"cells":[1],"values":{"backgroundColor":"#ffffff","columns":false,"padding":"0px","border":{}},"columns":[{"contents":[{"_meta":{"htmlID":"u_content_text_1","htmlClassNames":"u_content_text"},"type":"text","values":{"containerPadding":"30px","textAlign":"left","lineHeight":"140%","linkStyle":"none","displayCondition":null,"_meta":{"htmlID":"u_content_text_1","htmlClassNames":"u_content_text"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Hi {{first_name}},</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">My name is {{your_name}} and I'm with {{your_company}}. I saw you're the {{title}} at {{company_name}}, and I wanted to reach out.</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">We help companies in your space do [ONE_LINE_VALUE_PROP].</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Are you free for a quick 15-minute chat next week to see if we can help you?</span></p>"}},{"_meta":{"htmlID":"u_content_button_1","htmlClassNames":"u_content_button"},"type":"button","values":{"containerPadding":"10px","href_href":"https://your_calendar_link.com","href_target":"_blank","textAlign":"left","lineHeight":"120%","displayCondition":null,"_meta":{"htmlID":"u_content_button_1","htmlClassNames":"u_content_button"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<span style=\"font-size: 14px; line-height: 16.8px;\">Book a Time</span>","buttonColors":{"color":"#FFFFFF","backgroundColor":"#3AAEE0","hoverColor":"#FFFFFF","hoverBackgroundColor":"#3AAEE0"},"size":{"width":"auto","height":"auto"},"padding":"10px 20px","border":{"borderWidth":"0px"},"borderRadius":"4px"}},{"_meta":{"htmlID":"u_content_text_2","htmlClassNames":"u_content_text"},"type":"text","values":{"containerPadding":"20px","textAlign":"left","lineHeight":"140%","linkStyle":"none","displayCondition":null,"_meta":{"htmlID":"u_content_text_2","htmlClassNames":"u_content_text"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Best,</span></p>\n<p style=\"font-size: 14px; line-height: 140%;\"><span style="font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">{{your_name}}</span></p>"}}],"values":{}}}],"values":{"backgroundColor":"#e7e7e7","padding":"0px","contentWidth":"600px","fontFamily":{"label":"Cabin","value":"Cabin, sans-serif"},"linkStyle":"none","_meta":{"htmlID":"u_body","htmlClassNames":"u_body"}}}
+  },
+  {
+    name: "Welcome Email",
+    thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1586221040432-Welcome.png",
+    design: {"counters":{"u_column":2,"u_row":3,"u_content_text":3,"u_content_image":1,"u_content_button":1,"u_content_divider":1},"body":{"rows":[{"cells":[1],"values":{"backgroundColor":"#ffffff","columns":false,"padding":"0px","border":{}},"columns":[{"contents":[{"_meta":{"htmlID":"u_content_image_1","htmlClassNames":"u_content_image"},"type":"image","values":{"containerPadding":"30px 10px 10px","src_url":"https://cdn.tools.unlayer.com/img/default-logotype.png","src_width":170,"src_maxWidth":"100%","href_href":"","href_target":"_blank","alt_text":"Logo","textAlign":"center","border":{},"displayCondition":null,"_meta":{"htmlID":"u_content_image_1","htmlClassNames":"u_content_image"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true}},{"_meta":{"htmlID":"u_content_text_1","htmlClassNames":"u_content_text"},"type":"text","values":{"containerPadding":"10px","textAlign":"center","lineHeight":"140%","linkStyle":"none","displayCondition":null,"_meta":{"htmlID":"u_content_text_1","htmlClassNames":"u_content_text"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 28px; line-height: 39.2px;\"><strong><span style=\"line-height: 39.2px; font-family: Lora, serif; font-size: 28px;\">Welcome, {{first_name}}!</span></strong></span></p>"}},{"_meta":{"htmlID":"u_content_text_2","htmlClassNames":"u_content_text"},"type":"text","values":{"containerPadding":"10px 30px","textAlign":"center","lineHeight":"170%","linkStyle":"none","displayCondition":null,"_meta":{"htmlID":"u_content_text_2","htmlClassNames":"u_content_text"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<p style=\"font-size: 14px; line-height: 170%;\"><span style=\"font-size: 16px; line-height: 27.2px; font-family: Lato, sans-serif;\">We're so excited to have you on board. We're here to help you get started and make the most of your new account.</span></p>"}},{"_meta":{"htmlID":"u_content_button_1","htmlClassNames":"u_content_button"},"type":"button","values":{"containerPadding":"10px","href_href":"https://your_app_url.com/login","href_target":"_blank","textAlign":"center","lineHeight":"120%","displayCondition":null,"_meta":{"htmlID":"u_content_button_1","htmlClassNames":"u_content_button"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<span style=\"font-size: 14px; line-height: 16.8px;\">GET STARTED</span>","buttonColors":{"color":"#FFFFFF","backgroundColor":"#e03e2d","hoverColor":"#FFFFFF","hoverBackgroundColor":"#e03e2d"},"size":{"width":"auto","height":"auto"},"padding":"10px 20px","border":{"borderWidth":"0px"},"borderRadius":"4px"}},{"_meta":{"htmlID":"u_content_divider_1","htmlClassNames":"u_content_divider"},"type":"divider","values":{"containerPadding":"30px 10px","divider":{"width":"50%","borderWidth":"1px","borderStyle":"solid","borderColor":"#ced4d9","textAlign":"center"},"displayCondition":null,"_meta":{"htmlID":"u_content_divider_1","htmlClassNames":"u_content_divider"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true}},{"_meta":{"htmlID":"u_content_text_3","htmlClassNames":"u_content_text"},"type":"text","values":{"containerPadding":"10px 30px 30px","textAlign":"center","lineHeight":"170%","linkStyle":"none","displayCondition":null,"_meta":{"htmlID":"u_content_text_3","htmlClassNames":"u_content_text"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<p style=\"font-size: 14px; line-height: 170%;\"><span style=\"font-size: 16px; line-height: 27.2px; font-family: Lato, sans-serif;\">If you have any questions, just reply to this email. We're always happy to help!</span></p>\n<p style=\"font-size: 14px; line-height: 170%;\"><span style=\"font-size: 16px; line-height: 27.2px; font-family: Lato, sans-serif;\"><br />The {{your_company}} Team</span></p>"}}],"values":{}}],"values":{"backgroundColor":"#f9f9f9","padding":"0px","contentWidth":"600px","fontFamily":{"label":"Lato","value":"Lato, sans-serif"},"linkStyle":"none","_meta":{"htmlID":"u_body","htmlClassNames":"u_body"}}}
   }
-});
-
-// Template Tabs
-document.querySelectorAll('.template-tab-btn').forEach(tab => {
-  tab.addEventListener('click', () => {
-    const tabValue = tab.dataset.tab;
-    document.querySelectorAll('.template-tab-btn').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    document.querySelectorAll('.template-panel').forEach(panel => {
-      panel.id === tabValue ? panel.classList.add('active') : panel.classList.remove('active');
-    });
-  });
-});
-
-// Create Template Button
-if (createTemplateBtn) {
-  createTemplateBtn.addEventListener('click', () => {
-    window.location.href = 'editor.html';
-  });
-}
-
-// Logout Button
-if (logoutButton) {
-  logoutButton.addEventListener('click', async () => {
-    try {
-      await signOut(auth);
-      safeRemoveStorage('contactx_user_uid');
-      window.location.href = 'login.html';
-    } catch (error) {
-      console.error("Sign out error:", error);
-    }
-  });
-}
+];
