@@ -102,30 +102,7 @@ async function loadUserTemplates() {
 
 // --- 1. Add the Sign Out Button to the Profile ---
 const userProfile = document.querySelector('.user-profile');
-if (userProfile) {
-  // Check if we already added the button
-  if (!document.getElementById('sign-out-btn')) {
-    const signOutBtn = document.createElement('button');
-    signOutBtn.id = 'sign-out-btn';
-    signOutBtn.title = 'Sign Out';
-    // Apply styles from our previous step
-    signOutBtn.style.cssText = "background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size: 1.5rem; margin-left: 8px;";
-    signOutBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`;
-    
-    // Add the logout logic
-    signOutBtn.addEventListener('click', async () => {
-      try {
-        await signOut(auth);
-        localStorage.removeItem('contactx_user_uid'); // Clear the local ID
-        window.location.href = 'login.html'; // Go to login
-      } catch (error) {
-        console.error("Sign out error:", error);
-      }
-    });
-    
-    userProfile.appendChild(signOutBtn);
-  }
-}
+
 
 // --- 2. Main Auth Check on Page Load ---
 onAuthStateChanged(auth, (user) => {
@@ -168,3 +145,4 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // (Remove the old 'DOMContentLoaded' listener, as onAuthStateChanged handles our startup logic now)
+
