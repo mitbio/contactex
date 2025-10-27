@@ -146,3 +146,24 @@ onAuthStateChanged(auth, (user) => {
 
 // (Remove the old 'DOMContentLoaded' listener, as onAuthStateChanged handles our startup logic now)
 
+// main.js
+
+// --- (All your other code, including onAuthStateChanged, is above this) ---
+
+// =========================================================
+// --- NEW: LOGIC FOR SETTINGS PAGE ---
+// =========================================================
+
+const logoutButton = document.getElementById('logout-button');
+
+if (logoutButton) {
+  logoutButton.addEventListener('click', async () => {
+    try {
+      await signOut(auth); // 'auth' is already defined in onAuthStateChanged
+      safeRemoveStorage('contactx_user_uid'); // Use our safe function
+      window.location.href = 'login.html'; // Go to login
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  });
+}
