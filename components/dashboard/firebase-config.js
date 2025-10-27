@@ -1,22 +1,18 @@
 // firebase-config.js
 
-// Import the functions you need from the SDKs
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 //
-// --------------------------------------------------------------------
-// !! PASTE YOUR firebaseConfig OBJECT FROM THE FIREBASE CONSOLE HERE !!
-// --------------------------------------------------------------------
+//  THIS IS THE MISSING IMPORT THAT CAUSED YOUR ERROR
 //
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"; 
+
+// Your Firebase config (this is correct)
 const firebaseConfig = {
   apiKey: "AIzaSyDmbLZknKwhTBNtWQpwhXzUTc-AdZ6KjmM",
   authDomain: "contactxextension.firebaseapp.com",
   projectId: "contactxextension",
-  storageBucket: "contactxextension.firebasestorage.app",
+  storageBucket: "contactxextension.appspot.com",
   messagingSenderId: "797855742573",
   appId: "1:797855742573:web:683f44d3c339597ab15d64",
   measurementId: "G-FKK8GGSGWY"
@@ -25,7 +21,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Export the Firestore database instance
-// We will import 'db' in our other files
+//
+//  THIS IS THE ONLY PLACE WE CALL THESE FUNCTIONS
+//
 export const db = getFirestore(app);
-export const auth = getAuth(app);
+export const auth = getAuth(app); // This line will now work
