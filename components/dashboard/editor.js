@@ -1,32 +1,50 @@
 // editor.js
 
-// --- MODIFIED: Import 'auth' from our config ---
 import { db, auth } from './firebase-config.js';
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// --- NEW: Safe storage helper functions ---
+function safeSetStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {
+    console.warn("LocalStorage is not available in this environment.", e);
+  }
+}
+
+function safeGetStorage(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    console.warn("LocalStorage is not available in this environment.", e);
+    return null;
+  }
+}
+
+function safeRemoveStorage(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {
+    console.warn("LocalStorage is not available in this environment.", e);
+  }
+}
+
 /**
  * Saves the Unlayer design JSON to our Firestore database
- * under the currently logged-in user.
  */
 async function saveTemplateToFirebase(designJson) {
-  // --- NEW: Get the user's ID ---
   const user = auth.currentUser;
   
   if (!user) {
-    console.error("No user is logged in. Cannot save template.");
     alert("Error: You are not logged in. Redirecting to login.");
-    window.location.href = 'login.html'; // Redirect if something is wrong
+    window.location.href = 'login.html';
     return;
   }
   
   const uid = user.uid;
   
   try {
-    // Sanitize the object
     const sanitizedDesign = JSON.parse(JSON.stringify(designJson));
-
-    // --- NEW: This is the new, user-specific database path ---
-    // It will be like: "users" -> [USER_ID] -> "user_templates"
     const templatesCollectionPath = `users/${uid}/user_templates`;
 
     const docRef = await addDoc(collection(db, templatesCollectionPath), {
@@ -35,9 +53,7 @@ async function saveTemplateToFirebase(designJson) {
       createdAt: serverTimestamp()
     });
     
-    console.log("Template saved with ID: ", docRef.id);
     alert("Template saved successfully!");
-    
     window.location.href = 'index.html?view=campaigns';
 
   } catch (e) {
@@ -51,19 +67,45 @@ async function saveTemplateToFirebase(designJson) {
   }
 }
 
-// --- (The rest of your editor.js file is identical) ---
-
+// --- MODIFIED: Main startup logic ---
 window.addEventListener('DOMContentLoaded', () => {
+  
+  // --- NEW: Check if a template is being passed in ---
+  let templateToLoad = null;
+  const templateJsonString = safeGetStorage('contactx_template_to_load');
+  
+  if (templateJsonString) {
+    try {
+      templateToLoad = JSON.parse(templateJsonString);
+      // Clean up immediately so we don't load it again
+      safeRemoveStorage('contactx_template_to_load');
+    } catch (e) {
+      console.error("Failed to parse template to load:", e);
+      safeRemoveStorage('contactx_template_to_load');
+    }
+  }
+
+  // --- Initialize Unlayer ---
   unlayer.init({
     id: 'editor-container',
     projectId: '280840',
     displayMode: 'email',
   });
 
+  // --- Wait for editor to be ready ---
   unlayer.addEventListener('editor:ready', () => {
     console.log('Unlayer editor is now ready!');
+    
+    // --- NEW: Load the design if it exists ---
+    if (templateToLoad) {
+      console.log("Loading saved design into editor...");
+      unlayer.loadDesign(templateToLoad);
+    } else {
+      console.log("Starting with a blank canvas.");
+    }
+    
+    // --- (Save button logic is unchanged) ---
     const saveBtn = document.getElementById('save-template-btn');
-
     saveBtn.addEventListener('click', async () => {
       saveBtn.disabled = true;
       saveBtn.querySelector('span').textContent = 'Saving...';
