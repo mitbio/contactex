@@ -7,6 +7,7 @@ import { collection, query, getDocs, orderBy } from "https://www.gstatic.com/fir
 
 
 // --- 2. GLOBAL SELECTORS ---
+// Ensure all these IDs exist in your index.html
 const appOverlay = document.getElementById('app-overlay');
 const slideoutPanel = document.getElementById('slideout-panel');
 const closeBtn = document.getElementById('close-slideout');
@@ -40,13 +41,14 @@ function safeRemoveStorage(key) {
   }
 }
 
-// --- 5. PRE-BUILT TEMPLATE LIBRARY DATA (MOVED HERE) ---
+// --- 5. PRE-BUILT TEMPLATE LIBRARY DATA ---
+// Moved near the top to avoid potential definition order issues
 const LIBRARY_TEMPLATES = [
   {
     name: "Simple Cold Outreach",
     thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1602058334812-Simple.png",
     design: {"counters":{"u_column":1,"u_row":2,"u_content_text":2,"u_content_button":1},"body":{"rows":[{"cells":[1],"values":{"backgroundColor":"#ffffff","columns":false,"padding":"0px","border":{}},"columns":[{"contents":[{"_meta":{"htmlID":"u_content_text_1","htmlClassNames":"u_content_text"},"type":"text","values":{"containerPadding":"30px","textAlign":"left","lineHeight":"140%","linkStyle":"none","displayCondition":null,"_meta":{"htmlID":"u_content_text_1","htmlClassNames":"u_content_text"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Hi {{first_name}},</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">My name is {{your_name}} and I'm with {{your_company}}. I saw you're the {{title}} at {{company_name}}, and I wanted to reach out.</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">We help companies in your space do [ONE_LINE_VALUE_PROP].</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Are you free for a quick 15-minute chat next week to see if we can help you?</span></p>"}},{"_meta":{"htmlID":"u_content_button_1","htmlClassNames":"u_content_button"},"type":"button","values":{"containerPadding":"10px","href_href":"https://your_calendar_link.com","href_target":"_blank","textAlign":"left","lineHeight":"120%","displayCondition":null,"_meta":{"htmlID":"u_content_button_1","htmlClassNames":"u_content_button"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<span style=\"font-size: 14px; line-height: 16.8px;\">Book a Time</span>","buttonColors":{"color":"#FFFFFF","backgroundColor":"#3AAEE0","hoverColor":"#FFFFFF","hoverBackgroundColor":"#3AAEE0"},"size":{"width":"auto","height":"auto"},"padding":"10px 20px","border":{"borderWidth":"0px"},"borderRadius":"4px"}},{"_meta":{"htmlID":"u_content_text_2","htmlClassNames":"u_content_text"},"type":"text","values":{"containerPadding":"20px","textAlign":"left","lineHeight":"140%","linkStyle":"none","displayCondition":null,"_meta":{"htmlID":"u_content_text_2","htmlClassNames":"u_content_text"},"selectable":true,"draggable":true,"duplicatable":true,"deletable":true,"text":"<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Best,</span></p>\n<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">{{your_name}}</span></p>"}}],"values":{}}}],"values":{"backgroundColor":"#e7e7e7","padding":"0px","contentWidth":"600px","fontFamily":{"label":"Cabin","value":"Cabin, sans-serif"},"linkStyle":"none","_meta":{"htmlID":"u_body","htmlClassNames":"u_body"}}}
-  }, // Comma is correctly here
+  }, // Comma confirmed present
   {
     name: "Welcome Email",
     thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1586221040432-Welcome.png",
@@ -58,18 +60,23 @@ const LIBRARY_TEMPLATES = [
 
 async function loadUserTemplates() {
   const grid = document.querySelector('#your-templates .template-grid');
-  if (!grid) return;
+  // Check if grid element exists
+  if (!grid) {
+      console.error("User templates grid element not found.");
+      return;
+  }
   if (!currentUserId) {
     grid.innerHTML = `<p style="color: #ff8181;">Error: Not logged in.</p>`;
     return;
   }
 
-  grid.innerHTML = '';
+  grid.innerHTML = '<p style="color: var(--text-secondary);">Loading templates...</p>'; // Loading indicator
   const templatesCollectionPath = `users/${currentUserId}/user_templates`;
   const q = query(collection(db, templatesCollectionPath), orderBy("createdAt", "desc"));
 
   try {
     const querySnapshot = await getDocs(q);
+    grid.innerHTML = ''; // Clear loading indicator
 
     if (querySnapshot.empty) {
       grid.innerHTML = `<p style="color: var(--text-secondary);">No saved templates yet. Click "Create Template" to start!</p>`;
@@ -80,21 +87,18 @@ async function loadUserTemplates() {
       const template = doc.data();
       const templateId = doc.id;
 
-      // --- IMPROVED DATE HANDLING ---
-      let date = 'Just now';
+      // Robust date handling
+      let date = 'Date unknown';
       if (template.createdAt) {
         if (typeof template.createdAt.toDate === 'function') {
-          // Firestore Timestamp object
           date = template.createdAt.toDate().toLocaleDateString();
         } else if (template.createdAt.seconds) {
-          // Object with seconds/nanoseconds
           date = new Date(template.createdAt.seconds * 1000).toLocaleDateString();
         } else {
-          // Fallback: try to convert whatever it is to string
-          date = String(template.createdAt);
+          date = String(template.createdAt); // Fallback
         }
       }
-      
+
       const card = document.createElement('div');
       card.className = 'template-card';
       card.dataset.id = templateId;
@@ -107,8 +111,14 @@ async function loadUserTemplates() {
           <span class="card-date">Saved: ${date}</span>
         </div>
       `;
-      
+
       card.addEventListener('click', () => {
+        // Prevent click if template data is invalid
+        if (!template.design) {
+            console.error(`Template ${templateId} has invalid design data.`);
+            alert("Error: Cannot load this template, data is missing.");
+            return;
+        }
         console.log(`Loading saved template: ${templateId}`);
         safeSetStorage('contactx_template_to_load', JSON.stringify(template.design));
         window.location.href = 'editor.html';
@@ -118,17 +128,19 @@ async function loadUserTemplates() {
     });
   } catch (e) {
     console.error("Error fetching templates: ", e);
-    grid.innerHTML = `<p style="color: #ff8181;">Error: Could not load templates.</p>`;
+    grid.innerHTML = `<p style="color: #ff8181;">Error: Could not load templates. Check console.</p>`;
   }
 }
 
 function loadLibraryTemplates() {
   const grid = document.querySelector('#library-templates .template-grid');
-  if (!grid) return;
+  if (!grid) {
+      console.error("Library templates grid element not found.");
+      return;
+  }
 
   grid.innerHTML = '';
 
-  // Use the globally defined LIBRARY_TEMPLATES
   LIBRARY_TEMPLATES.forEach(template => {
     const card = document.createElement('div');
     card.className = 'template-card';
@@ -141,8 +153,14 @@ function loadLibraryTemplates() {
         <span class="card-tag">Library</span>
       </div>
     `;
-    
+
     card.addEventListener('click', () => {
+       // Prevent click if template data is invalid
+      if (!template.design) {
+            console.error(`Library template "${template.name}" has invalid design data.`);
+            alert("Error: Cannot load this library template, data is missing.");
+            return;
+        }
       console.log(`Loading library template: ${template.name}`);
       safeSetStorage('contactx_template_to_load', JSON.stringify(template.design));
       window.location.href = 'editor.html';
@@ -153,7 +171,6 @@ function loadLibraryTemplates() {
 }
 
 function openSlideout(data) {
-  // Ensure elements exist before animating
   if (slideoutPanel && appOverlay) {
       slideoutPanel.style.display = 'block';
       appOverlay.classList.remove('hidden');
@@ -167,7 +184,6 @@ function openSlideout(data) {
 
 
 function closeSlideout() {
-  // Ensure elements exist before animating
   if (slideoutPanel && appOverlay) {
       gsap.to(slideoutPanel, {
           right: -420, duration: 0.4, ease: "power2.in",
@@ -188,12 +204,11 @@ function closeSlideout() {
 }
 
 function updateProfileUI(user) {
-  if (userNameEl) userNameEl.textContent = user.displayName || 'New User';
-  if (userEmailEl) userEmailEl.textContent = user.email;
-  if (avatarEl && user.displayName) {
-    avatarEl.textContent = user.displayName.charAt(0).toUpperCase();
-  } else if (avatarEl && user.email) {
-    avatarEl.textContent = user.email.charAt(0).toUpperCase();
+  if (userNameEl) userNameEl.textContent = user.displayName || user.email || 'User'; // Added fallback
+  if (userEmailEl) userEmailEl.textContent = user.email || ''; // Handle missing email
+  if (avatarEl) {
+      const initial = user.displayName?.charAt(0) || user.email?.charAt(0) || '?';
+      avatarEl.textContent = initial.toUpperCase();
   }
 }
 
@@ -203,36 +218,27 @@ function handleInitialView() {
   const targetNavLink = document.querySelector(`.nav-link[data-view="${viewParam || 'dashboard'}"]`);
 
   if (targetNavLink) {
-    // Check if it's already active to prevent re-clicking the dashboard on initial load
     if (!targetNavLink.classList.contains('active')) {
-      targetNavLink.click();
+      // Defer click slightly to ensure all elements are ready
+      setTimeout(() => targetNavLink.click(), 0);
     }
   } else {
-    // Fallback to dashboard if view param is invalid
-    document.querySelector('.nav-link[data-view="dashboard"]')?.click();
+    // Fallback to dashboard
+    setTimeout(() => document.querySelector('.nav-link[data-view="dashboard"]')?.click(), 0);
   }
 
-  // Ensure sidebars are collapsed initially, but only if not deep linking
-  if (!viewParam) {
-    // Small delay to ensure elements are ready for GSAP
-    setTimeout(() => {
-        document.querySelectorAll('.projects-header').forEach(header => {
-            const key = header.getAttribute('data-toggle');
-            const list = document.getElementById('projects-' + key);
-            const chevron = document.getElementById('chevron-' + key);
-            if (list && chevron && !list.classList.contains('collapsed')) {
-                 // Simulate a click only if it's not already collapsed
-                 header.click();
-            } else if (list && !list.classList.contains('collapsed')) {
-                // Force collapse if state is inconsistent (JS loaded late)
-                list.classList.add('collapsed');
-                list.style.maxHeight = '0px';
-                list.style.opacity = '0';
-                if(chevron) gsap.to(chevron, { rotation: 0, duration: 0 }); // Reset chevron instantly
-            }
-        });
-    }, 100); // 100ms delay might be enough
-  }
+  // Initial Sidebar Collapse Logic (slightly delayed)
+  setTimeout(() => {
+    document.querySelectorAll('.projects-header').forEach(header => {
+        const key = header.getAttribute('data-toggle');
+        const list = document.getElementById('projects-' + key);
+        const chevron = document.getElementById('chevron-' + key);
+        // Only collapse if it's currently expanded
+        if (list && chevron && !list.classList.contains('collapsed')) {
+             header.click(); // Simulate click to trigger animation
+        }
+    });
+  }, 150); // Increased delay slightly
 }
 
 
@@ -244,21 +250,19 @@ onAuthStateChanged(auth, (user) => {
     currentUserId = user.uid;
     safeSetStorage('contactx_user_uid', user.uid);
     updateProfileUI(user);
-    
-    // Load library templates once user is confirmed logged in
-    loadLibraryTemplates(); // Moved here
-    
-    handleInitialView(); // Handle view logic *after* auth confirmed
-
+    loadLibraryTemplates(); // Load static templates once auth is confirmed
+    handleInitialView();
   } else {
     console.log("No user logged in, redirecting to login page.");
     safeRemoveStorage('contactx_user_uid');
-    window.location.href = 'login.html';
+    // Use replace to prevent back button going to blank dashboard
+    window.location.replace('login.html');
   }
 });
 
 
 // --- 8. EVENT LISTENERS ---
+// Added checks to ensure elements exist before adding listeners
 
 // Sidebar Projects Collapse
 document.querySelectorAll('.projects-header').forEach(header => {
@@ -273,15 +277,11 @@ document.querySelectorAll('.projects-header').forEach(header => {
     if (collapsed) {
       gsap.to(list, { maxHeight: 0, opacity: 0, duration: 0.35, ease: "power2.inOut" });
     } else {
-      // Get natural height before animating
       const scrollHeight = list.scrollHeight;
-      list.style.maxHeight = '0px'; // Ensure it starts from 0 if reopening quickly
-      list.style.opacity = '0';
-      gsap.to(list, { maxHeight: scrollHeight, opacity: 1, duration: 0.35, ease: "power2.out" }); // Use power2.out
+      gsap.fromTo(list, { maxHeight: 0, opacity: 0 }, { maxHeight: scrollHeight, opacity: 1, duration: 0.35, ease: "power2.out" });
     }
   });
 });
-
 
 // Main Navigation
 document.querySelectorAll('.nav-link').forEach(link => {
@@ -290,11 +290,10 @@ document.querySelectorAll('.nav-link').forEach(link => {
     const viewId = link.getAttribute('data-view');
     if (!viewId) return;
 
-    if (viewId === 'campaigns' && currentUserId) { // Ensure user is logged in
+    if (viewId === 'campaigns' && currentUserId) {
       loadUserTemplates();
     }
 
-    // Don't re-animate if already active
     if (link.classList.contains('active')) return;
 
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -303,27 +302,25 @@ document.querySelectorAll('.nav-link').forEach(link => {
     const newView = document.getElementById(viewId + '-view');
     const currentView = document.querySelector('.main-view:not(.hidden)');
 
-    // Ensure elements exist
     if (!newView) {
         console.error(`View with ID "${viewId}-view" not found.`);
         return;
     }
 
-    if (currentView && currentView !== newView) { // Don't animate out if it's the same view somehow
+    if (currentView && currentView !== newView) {
       gsap.to(currentView, {
         opacity: 0, y: -10, duration: 0.2, ease: "power1.in",
         onComplete: () => {
           currentView.classList.add('hidden');
-          // Reset styles immediately after hiding
+          // Reset styles immediately
           currentView.style.opacity = '';
           currentView.style.transform = '';
         }
       });
     }
 
-    // Animate in the new view
     newView.classList.remove('hidden');
-    // Ensure starting state is correct before animating in
+    // Ensure starting styles are set before animating
     gsap.set(newView, { opacity: 0, y: 10 });
     gsap.to(newView,
       {
@@ -331,7 +328,7 @@ document.querySelectorAll('.nav-link').forEach(link => {
         y: 0,
         duration: 0.3,
         ease: "power1.out",
-        delay: (currentView && currentView !== newView) ? 0.15 : 0 // Delay only if switching
+        delay: (currentView && currentView !== newView) ? 0.15 : 0
       }
     );
   });
@@ -343,7 +340,8 @@ if (appOverlay) appOverlay.addEventListener('click', closeSlideout);
 
 document.querySelectorAll('.lead-row').forEach(row => {
   row.addEventListener('click', () => {
-    openSlideout();
+    // TODO: Pass actual lead data based on row.dataset.leadId or similar
+    openSlideout({ name: row.querySelector('.lead-name')?.textContent || 'Lead' });
   });
 });
 
@@ -375,12 +373,15 @@ if (createTemplateBtn) {
 // Logout Button
 if (logoutButton) {
   logoutButton.addEventListener('click', async () => {
+    console.log("Logout button clicked"); // Debugging line
     try {
       await signOut(auth);
       safeRemoveStorage('contactx_user_uid');
-      window.location.href = 'login.html';
+      window.location.replace('login.html'); // Use replace
     } catch (error) {
       console.error("Sign out error:", error);
     }
   });
+} else {
+    console.warn("Logout button not found."); // Add warning if element is missing
 }
