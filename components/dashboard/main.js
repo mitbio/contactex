@@ -53,6 +53,11 @@ const LIBRARY_TEMPLATES = [
     name: "Welcome Email",
     thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1586221040432-Welcome.png",
     designPath: "templates/welcome_email.json"
+  },
+  {
+    name: "Follow-Up Template",
+    thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1602058334812-Simple.png", // Using same thumbnail for now
+    designPath: "templates/follow_up.json"
   }
 ];
 
@@ -384,3 +389,4 @@ if (logoutButton) {
 } else {
     console.warn("Logout button not found.");
 }
+
