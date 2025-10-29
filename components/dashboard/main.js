@@ -369,7 +369,7 @@ const LIBRARY_TEMPLATES = [
                         "htmlClassNames": "u_body"
                     }
                 }
-            }}
+            }
   },
   {
     name: "Follow-Up Template",
@@ -707,6 +707,7 @@ if (logoutButton) {
 } else {
     console.warn("Logout button not found."); // Add warning if element is missing
 }
+
 
 
 
