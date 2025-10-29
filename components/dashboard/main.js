@@ -47,7 +47,7 @@ const LIBRARY_TEMPLATES = [
   {
     name: "Simple Cold Outreach",
     thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1602058334812-Simple.png",
-    design: {{
+    design: {
   "counters": {
     "u_column": 1,
     "u_row": 2,
@@ -175,7 +175,7 @@ const LIBRARY_TEMPLATES = [
       }
     }
   }
-}}
+}
   },
   {
     name: "Welcome Email",
@@ -518,4 +518,5 @@ if (logoutButton) {
 } else {
     console.warn("Logout button not found."); // Add warning if element is missing
 }
+
 
