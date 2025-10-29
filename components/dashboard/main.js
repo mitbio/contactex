@@ -180,7 +180,196 @@ const LIBRARY_TEMPLATES = [
   {
     name: "Welcome Email",
     thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1586221040432-Welcome.png",
-    design: {}
+    design: {"counters": {
+    "u_column": 2,
+    "u_row": 3,
+    "u_content_text": 3,
+    "u_content_image": 1,
+    "u_content_button": 1,
+    "u_content_divider": 1
+}, "body": {
+    "rows": [{
+                "cells": [1],
+                "values": {
+                    "backgroundColor": "#ffffff",
+                    "columns": false,
+                    "padding": "0px",
+                    "border": {}
+                },
+                "columns": [{
+                    "contents": [{
+                        "_meta": {
+                            "htmlID": "u_content_image_1",
+                            "htmlClassNames": "u_content_image"
+                        },
+                        "type": "image",
+                        "values": {
+                            "containerPadding": "30px 10px 10px",
+                            "src_url": "https://cdn.tools.unlayer.com/img/default-logotype.png",
+                            "src_width": 170,
+                            "src_maxWidth": "100%",
+                            "href_href": "",
+                            "href_target": "_blank",
+                            "alt_text": "Logo",
+                            "textAlign": "center",
+                            "border": {},
+                            "displayCondition": null,
+                            "_meta": {
+                                "htmlID": "u_content_image_1",
+                                "htmlClassNames": "u_content_image"
+                            },
+                            "selectable": true,
+                            "draggable": true,
+                            "duplicatable": true,
+                            "deletable": true
+                        }
+                    }, {
+                        "_meta": {
+                            "htmlID": "u_content_text_1",
+                            "htmlClassNames": "u_content_text"
+                        },
+                        "type": "text",
+                        "values": {
+                            "containerPadding": "10px",
+                            "textAlign": "center",
+                            "lineHeight": "140%",
+                            "linkStyle": "none",
+                            "displayCondition": null,
+                            "_meta": {
+                                "htmlID": "u_content_text_1",
+                                "htmlClassNames": "u_content_text"
+                            },
+                            "selectable": true,
+                            "draggable": true,
+                            "duplicatable": true,
+                            "deletable": true,
+                            "text": "<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 28px; line-height: 39.2px;\"><strong><span style=\"line-height: 39.2px; font-family: Lora, serif; font-size: 28px;\">Welcome, {{first_name}}!</span></strong></span></p>"
+                        }
+                    }, {
+                        "_meta": {
+                            "htmlID": "u_content_text_2",
+                            "htmlClassNames": "u_content_text"
+                        },
+                        "type": "text",
+                        "values": {
+                            "containerPadding": "10px 30px",
+                            "textAlign": "center",
+                            "lineHeight": "170%",
+                            "linkStyle": "none",
+                            "displayCondition": null,
+                            "_meta": {
+                                "htmlID": "u_content_text_2",
+                                "htmlClassNames": "u_content_text"
+                            },
+                            "selectable": true,
+                            "draggable": true,
+                            "duplicatable": true,
+                            "deletable": true,
+                            "text": "<p style=\"font-size: 14px; line-height: 170%;\"><span style=\"font-size: 16px; line-height: 27.2px; font-family: Lato, sans-serif;\">We're so excited to have you on board. We're here to help you get started and make the most of your new account.</span></p>"
+                        }
+                    }, {
+                        "_meta": {
+                            "htmlID": "u_content_button_1",
+                            "htmlClassNames": "u_content_button"
+                        },
+                        "type": "button",
+                        "values": {
+                            "containerPadding": "10px",
+                            "href_href": "https://your_app_url.com/login",
+                            "href_target": "_blank",
+                            "textAlign": "center",
+                            "lineHeight": "120%",
+                            "displayCondition": null,
+                            "_meta": {
+                                "htmlID": "u_content_button_1",
+                                "htmlClassNames": "u_content_button"
+                            },
+                            "selectable": true,
+                            "draggable": true,
+                            "duplicatable": true,
+                            "deletable": true,
+                            "text": "<span style=\"font-size: 14px; line-height: 16.8px;\">GET STARTED</span>",
+                            "buttonColors": {
+                                "color": "#FFFFFF",
+                                "backgroundColor": "#e03e2d",
+                                "hoverColor": "#FFFFFF",
+                                "hoverBackgroundColor": "#e03e2d"
+                            },
+                            "size": {
+                                "width": "auto",
+                                "height": "auto"
+                            },
+                            "padding": "10px 20px",
+                            "border": {
+                                "borderWidth": "0px"
+                            },
+                            "borderRadius": "4px"
+                        }
+                    }, {
+                        "_meta": {
+                            "htmlID": "u_content_divider_1",
+                            "htmlClassNames": "u_content_divider"
+                        },
+                        "type": "divider",
+                        "values": {
+                            "containerPadding": "30px 10px",
+                            "divider": {
+                                "width": "50%",
+                                "borderWidth": "1px",
+                                "borderStyle": "solid",
+                                "borderColor": "#ced4d9",
+                                "textAlign": "center"
+                            },
+                            "displayCondition": null,
+                            "_meta": {
+                                "htmlID": "u_content_divider_1",
+                                "htmlClassNames": "u_content_divider"
+                            },
+                            "selectable": true,
+                            "draggable": true,
+                            "duplicatable": true,
+                            "deletable": true
+                        }
+                    }, {
+                        "_meta": {
+                            "htmlID": "u_content_text_3",
+                            "htmlClassNames": "u_content_text"
+                        },
+                        "type": "text",
+                        "values": {
+                            "containerPadding": "10px 30px 30px",
+                            "textAlign": "center",
+                            "lineHeight": "170%",
+                            "linkStyle": "none",
+                            "displayCondition": null,
+                            "_meta": {
+                                "htmlID": "u_content_text_3",
+                                "htmlClassNames": "u_content_text"
+                            },
+                            "selectable": true,
+                            "draggable": true,
+                            "duplicatable": true,
+                            "deletable": true,
+                            "text": "<p style=\"font-size: 14px; line-height: 170%;\"><span style=\"font-size: 16px; line-height: 27.2px; font-family: Lato, sans-serif;\">If you have any questions, just reply to this email. We're always happy to help!</span></p>\n<p style=\"font-size: 14px; line-height: 170%;\"><span style=\"font-size: 16px; line-height: 27.2px; font-family: Lato, sans-serif;\"><br />The {{your_company}} Team</span></p>"
+                        }
+                    }],
+                    "values": {}
+                }],
+                "values": {
+                    "backgroundColor": "#f9f9f9",
+                    "padding": "0px",
+                    "contentWidth": "600px",
+                    "fontFamily": {
+                        "label": "Lato",
+                        "value": "Lato, sans-serif"
+                    },
+                    "linkStyle": "none",
+                    "_meta": {
+                        "htmlID": "u_body",
+                        "htmlClassNames": "u_body"
+                    }
+                }
+            }}
   },
   {
     name: "Follow-Up Template",
@@ -518,5 +707,6 @@ if (logoutButton) {
 } else {
     console.warn("Logout button not found."); // Add warning if element is missing
 }
+
 
 
