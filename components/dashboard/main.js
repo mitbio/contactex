@@ -47,7 +47,135 @@ const LIBRARY_TEMPLATES = [
   {
     name: "Simple Cold Outreach",
     thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1602058334812-Simple.png",
-    design: {}
+    design: {{
+  "counters": {
+    "u_column": 1,
+    "u_row": 2,
+    "u_content_text": 2,
+    "u_content_button": 1
+  },
+  "body": {
+    "rows": [
+      {
+        "cells": [
+          1
+        ],
+        "values": {
+          "backgroundColor": "#ffffff",
+          "columns": false,
+          "padding": "0px",
+          "border": {}
+        },
+        "columns": [
+          {
+            "contents": [
+              {
+                "_meta": {
+                  "htmlID": "u_content_text_1",
+                  "htmlClassNames": "u_content_text"
+                },
+                "type": "text",
+                "values": {
+                  "containerPadding": "30px",
+                  "textAlign": "left",
+                  "lineHeight": "140%",
+                  "linkStyle": "none",
+                  "displayCondition": null,
+                  "_meta": {
+                    "htmlID": "u_content_text_1",
+                    "htmlClassNames": "u_content_text"
+                  },
+                  "selectable": true,
+                  "draggable": true,
+                  "duplicatable": true,
+                  "deletable": true,
+                  "text": "<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Hi {{first_name}},</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">My name is {{your_name}} and I'm with {{your_company}}. I saw you're the {{title}} at {{company_name}}, and I wanted to reach out.</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">We help companies in your space do [ONE_LINE_VALUE_PROP].</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Are you free for a quick 15-minute chat next week to see if we can help you?</span></p>"
+                }
+              },
+              {
+                "_meta": {
+                  "htmlID": "u_content_button_1",
+                  "htmlClassNames": "u_content_button"
+                },
+                "type": "button",
+                "values": {
+                  "containerPadding": "10px",
+                  "href_href": "https://your_calendar_link.com",
+                  "href_target": "_blank",
+                  "textAlign": "left",
+                  "lineHeight": "120%",
+                  "displayCondition": null,
+                  "_meta": {
+                    "htmlID": "u_content_button_1",
+                    "htmlClassNames": "u_content_button"
+                  },
+                  "selectable": true,
+                  "draggable": true,
+                  "duplicatable": true,
+                  "deletable": true,
+                  "text": "<span style=\"font-size: 14px; line-height: 16.8px;\">Book a Time</span>",
+                  "buttonColors": {
+                    "color": "#FFFFFF",
+                    "backgroundColor": "#3AAEE0",
+                    "hoverColor": "#FFFFFF",
+                    "hoverBackgroundColor": "#3AAEE0"
+                  },
+                  "size": {
+                    "width": "auto",
+                    "height": "auto"
+                  },
+                  "padding": "10px 20px",
+                  "border": {
+                    "borderWidth": "0px"
+                  },
+                  "borderRadius": "4px"
+                }
+              },
+              {
+                "_meta": {
+                  "htmlID": "u_content_text_2",
+                  "htmlClassNames": "u_content_text"
+                },
+                "type": "text",
+                "values": {
+                  "containerPadding": "20px",
+                  "textAlign": "left",
+                  "lineHeight": "140%",
+                  "linkStyle": "none",
+                  "displayCondition": null,
+                  "_meta": {
+                    "htmlID": "u_content_text_2",
+                    "htmlClassNames": "u_content_text"
+                  },
+                  "selectable": true,
+                  "draggable": true,
+                  "duplicatable": true,
+                  "deletable": true,
+                  "text": "<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Best,</span></p>\n<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">{{your_name}}</span></p>"
+                }
+              }
+            ],
+            "values": {}
+          }
+        ]
+      }
+    ],
+    "values": {
+      "backgroundColor": "#e7e7e7",
+      "padding": "0px",
+      "contentWidth": "600px",
+      "fontFamily": {
+        "label": "Cabin",
+        "value": "Cabin, sans-serif"
+      },
+      "linkStyle": "none",
+      "_meta": {
+        "htmlID": "u_body",
+        "htmlClassNames": "u_body"
+      }
+    }
+  }
+}}
   },
   {
     name: "Welcome Email",
@@ -390,3 +518,4 @@ if (logoutButton) {
 } else {
     console.warn("Logout button not found."); // Add warning if element is missing
 }
+
