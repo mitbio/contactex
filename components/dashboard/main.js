@@ -1,4 +1,4 @@
- // main.js
+// main.js
 
 // --- 1. IMPORTS ---
 import { db, auth } from './firebase-config.js';
@@ -7,7 +7,6 @@ import { collection, query, getDocs, orderBy } from "https://www.gstatic.com/fir
 
 
 // --- 2. GLOBAL SELECTORS ---
-// Ensure all these IDs exist in your index.html
 const appOverlay = document.getElementById('app-overlay');
 const slideoutPanel = document.getElementById('slideout-panel');
 const closeBtn = document.getElementById('close-slideout');
@@ -41,340 +40,19 @@ function safeRemoveStorage(key) {
   }
 }
 
-// --- 5. PRE-BUILT TEMPLATE LIBRARY DATA ---
-// Moved near the top to avoid potential definition order issues
+// --- 5. PRE-BUILT TEMPLATE LIBRARY DATA (NEW CLEAN VERSION) ---
+// This is now simple, clean, and fast.
 const LIBRARY_TEMPLATES = [
   {
     name: "Simple Cold Outreach",
     thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1602058334812-Simple.png",
-    design: {
-  "counters": {
-    "u_column": 1,
-    "u_row": 2,
-    "u_content_text": 2,
-    "u_content_button": 1
-  },
-  "body": {
-    "rows": [
-      {
-        "cells": [
-          1
-        ],
-        "values": {
-          "backgroundColor": "#ffffff",
-          "columns": false,
-          "padding": "0px",
-          "border": {}
-        },
-        "columns": [
-          {
-            "contents": [
-              {
-                "_meta": {
-                  "htmlID": "u_content_text_1",
-                  "htmlClassNames": "u_content_text"
-                },
-                "type": "text",
-                "values": {
-                  "containerPadding": "30px",
-                  "textAlign": "left",
-                  "lineHeight": "140%",
-                  "linkStyle": "none",
-                  "displayCondition": null,
-                  "_meta": {
-                    "htmlID": "u_content_text_1",
-                    "htmlClassNames": "u_content_text"
-                  },
-                  "selectable": true,
-                  "draggable": true,
-                  "duplicatable": true,
-                  "deletable": true,
-                  "text": "<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Hi {{first_name}},</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">My name is {{your_name}} and I'm with {{your_company}}. I saw you're the {{title}} at {{company_name}}, and I wanted to reach out.</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">We help companies in your space do [ONE_LINE_VALUE_PROP].</span></p>\n<p style=\"font-size: 14px; line-height: 140%; text-align: left;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Are you free for a quick 15-minute chat next week to see if we can help you?</span></p>"
-                }
-              },
-              {
-                "_meta": {
-                  "htmlID": "u_content_button_1",
-                  "htmlClassNames": "u_content_button"
-                },
-                "type": "button",
-                "values": {
-                  "containerPadding": "10px",
-                  "href_href": "https://your_calendar_link.com",
-                  "href_target": "_blank",
-                  "textAlign": "left",
-                  "lineHeight": "120%",
-                  "displayCondition": null,
-                  "_meta": {
-                    "htmlID": "u_content_button_1",
-                    "htmlClassNames": "u_content_button"
-                  },
-                  "selectable": true,
-                  "draggable": true,
-                  "duplicatable": true,
-                  "deletable": true,
-                  "text": "<span style=\"font-size: 14px; line-height: 16.8px;\">Book a Time</span>",
-                  "buttonColors": {
-                    "color": "#FFFFFF",
-                    "backgroundColor": "#3AAEE0",
-                    "hoverColor": "#FFFFFF",
-                    "hoverBackgroundColor": "#3AAEE0"
-                  },
-                  "size": {
-                    "width": "auto",
-                    "height": "auto"
-                  },
-                  "padding": "10px 20px",
-                  "border": {
-                    "borderWidth": "0px"
-                  },
-                  "borderRadius": "4px"
-                }
-              },
-              {
-                "_meta": {
-                  "htmlID": "u_content_text_2",
-                  "htmlClassNames": "u_content_text"
-                },
-                "type": "text",
-                "values": {
-                  "containerPadding": "20px",
-                  "textAlign": "left",
-                  "lineHeight": "140%",
-                  "linkStyle": "none",
-                  "displayCondition": null,
-                  "_meta": {
-                    "htmlID": "u_content_text_2",
-                    "htmlClassNames": "u_content_text"
-                  },
-                  "selectable": true,
-                  "draggable": true,
-                  "duplicatable": true,
-                  "deletable": true,
-                  "text": "<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">Best,</span></p>\n<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 16px; line-height: 22.4px; font-family: Cabin, sans-serif;\">{{your_name}}</span></p>"
-                }
-              }
-            ],
-            "values": {}
-          }
-        ]
-      }
-    ],
-    "values": {
-      "backgroundColor": "#e7e7e7",
-      "padding": "0px",
-      "contentWidth": "600px",
-      "fontFamily": {
-        "label": "Cabin",
-        "value": "Cabin, sans-serif"
-      },
-      "linkStyle": "none",
-      "_meta": {
-        "htmlID": "u_body",
-        "htmlClassNames": "u_body"
-      }
-    }
-  }
-}
+    // This is the new, important part:
+    designPath: "templates/cold_outreach.json" 
   },
   {
     name: "Welcome Email",
     thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1586221040432-Welcome.png",
-    design: {"counters": {
-    "u_column": 2,
-    "u_row": 3,
-    "u_content_text": 3,
-    "u_content_image": 1,
-    "u_content_button": 1,
-    "u_content_divider": 1
-}, "body": {
-    "rows": [{
-                "cells": [1],
-                "values": {
-                    "backgroundColor": "#ffffff",
-                    "columns": false,
-                    "padding": "0px",
-                    "border": {}
-                },
-                "columns": [{
-                    "contents": [{
-                        "_meta": {
-                            "htmlID": "u_content_image_1",
-                            "htmlClassNames": "u_content_image"
-                        },
-                        "type": "image",
-                        "values": {
-                            "containerPadding": "30px 10px 10px",
-                            "src_url": "https://cdn.tools.unlayer.com/img/default-logotype.png",
-                            "src_width": 170,
-                            "src_maxWidth": "100%",
-                            "href_href": "",
-                            "href_target": "_blank",
-                            "alt_text": "Logo",
-                            "textAlign": "center",
-                            "border": {},
-                            "displayCondition": null,
-                            "_meta": {
-                                "htmlID": "u_content_image_1",
-                                "htmlClassNames": "u_content_image"
-                            },
-                            "selectable": true,
-                            "draggable": true,
-                            "duplicatable": true,
-                            "deletable": true
-                        }
-                    }, {
-                        "_meta": {
-                            "htmlID": "u_content_text_1",
-                            "htmlClassNames": "u_content_text"
-                        },
-                        "type": "text",
-                        "values": {
-                            "containerPadding": "10px",
-                            "textAlign": "center",
-                            "lineHeight": "140%",
-                            "linkStyle": "none",
-                            "displayCondition": null,
-                            "_meta": {
-                                "htmlID": "u_content_text_1",
-                                "htmlClassNames": "u_content_text"
-                            },
-                            "selectable": true,
-                            "draggable": true,
-                            "duplicatable": true,
-                            "deletable": true,
-                            "text": "<p style=\"font-size: 14px; line-height: 140%;\"><span style=\"font-size: 28px; line-height: 39.2px;\"><strong><span style=\"line-height: 39.2px; font-family: Lora, serif; font-size: 28px;\">Welcome, {{first_name}}!</span></strong></span></p>"
-                        }
-                    }, {
-                        "_meta": {
-                            "htmlID": "u_content_text_2",
-                            "htmlClassNames": "u_content_text"
-                        },
-                        "type": "text",
-                        "values": {
-                            "containerPadding": "10px 30px",
-                            "textAlign": "center",
-                            "lineHeight": "170%",
-                            "linkStyle": "none",
-                            "displayCondition": null,
-                            "_meta": {
-                                "htmlID": "u_content_text_2",
-                                "htmlClassNames": "u_content_text"
-                            },
-                            "selectable": true,
-                            "draggable": true,
-                            "duplicatable": true,
-                            "deletable": true,
-                            "text": "<p style=\"font-size: 14px; line-height: 170%;\"><span style=\"font-size: 16px; line-height: 27.2px; font-family: Lato, sans-serif;\">We're so excited to have you on board. We're here to help you get started and make the most of your new account.</span></p>"
-                        }
-                    }, {
-                        "_meta": {
-                            "htmlID": "u_content_button_1",
-                            "htmlClassNames": "u_content_button"
-                        },
-                        "type": "button",
-                        "values": {
-                            "containerPadding": "10px",
-                            "href_href": "https://your_app_url.com/login",
-                            "href_target": "_blank",
-                            "textAlign": "center",
-                            "lineHeight": "120%",
-                            "displayCondition": null,
-                            "_meta": {
-                                "htmlID": "u_content_button_1",
-                                "htmlClassNames": "u_content_button"
-                            },
-                            "selectable": true,
-                            "draggable": true,
-                            "duplicatable": true,
-                            "deletable": true,
-                            "text": "<span style=\"font-size: 14px; line-height: 16.8px;\">GET STARTED</span>",
-                            "buttonColors": {
-                                "color": "#FFFFFF",
-                                "backgroundColor": "#e03e2d",
-                                "hoverColor": "#FFFFFF",
-                                "hoverBackgroundColor": "#e03e2d"
-                            },
-                            "size": {
-                                "width": "auto",
-                                "height": "auto"
-                            },
-                            "padding": "10px 20px",
-                            "border": {
-                                "borderWidth": "0px"
-                            },
-                            "borderRadius": "4px"
-                        }
-                    }, {
-                        "_meta": {
-                            "htmlID": "u_content_divider_1",
-                            "htmlClassNames": "u_content_divider"
-                        },
-                        "type": "divider",
-                        "values": {
-                            "containerPadding": "30px 10px",
-                            "divider": {
-                                "width": "50%",
-                                "borderWidth": "1px",
-                                "borderStyle": "solid",
-                                "borderColor": "#ced4d9",
-                                "textAlign": "center"
-                            },
-                            "displayCondition": null,
-                            "_meta": {
-                                "htmlID": "u_content_divider_1",
-                                "htmlClassNames": "u_content_divider"
-                            },
-                            "selectable": true,
-                            "draggable": true,
-                            "duplicatable": true,
-                            "deletable": true
-                        }
-                    }, {
-                        "_meta": {
-                            "htmlID": "u_content_text_3",
-                            "htmlClassNames": "u_content_text"
-                        },
-                        "type": "text",
-                        "values": {
-                            "containerPadding": "10px 30px 30px",
-                            "textAlign": "center",
-                            "lineHeight": "170%",
-                            "linkStyle": "none",
-                            "displayCondition": null,
-                            "_meta": {
-                                "htmlID": "u_content_text_3",
-                                "htmlClassNames": "u_content_text"
-                            },
-                            "selectable": true,
-                            "draggable": true,
-                            "duplicatable": true,
-                            "deletable": true,
-                            "text": "<p style=\"font-size: 14px; line-height: 170%;\"><span style=\"font-size: 16px; line-height: 27.2px; font-family: Lato, sans-serif;\">If you have any questions, just reply to this email. We're always happy to help!</span></p>\n<p style=\"font-size: 14px; line-height: 170%;\"><span style=\"font-size: 16px; line-height: 27.2px; font-family: Lato, sans-serif;\"><br />The {{your_company}} Team</span></p>"
-                        }
-                    }],
-                    "values": {}
-                }],
-                "values": {
-                    "backgroundColor": "#f9f9f9",
-                    "padding": "0px",
-                    "contentWidth": "600px",
-                    "fontFamily": {
-                        "label": "Lato",
-                        "value": "Lato, sans-serif"
-                    },
-                    "linkStyle": "none",
-                    "_meta": {
-                        "htmlID": "u_body",
-                        "htmlClassNames": "u_body"
-                    }
-                }
-            }
-  },
-  {
-    name: "Follow-Up Template",
-    thumbnailUrl: "https://cdn.screenshots.unlayer.com/assets/1602058334812-Simple.png",
-    design: {}
+    designPath: "templates/welcome_email.json"
   }
 ];
 
@@ -382,7 +60,6 @@ const LIBRARY_TEMPLATES = [
 
 async function loadUserTemplates() {
   const grid = document.querySelector('#your-templates .template-grid');
-  // Check if grid element exists
   if (!grid) {
       console.error("User templates grid element not found.");
       return;
@@ -392,13 +69,13 @@ async function loadUserTemplates() {
     return;
   }
 
-  grid.innerHTML = '<p style="color: var(--text-secondary);">Loading templates...</p>'; // Loading indicator
+  grid.innerHTML = '<p style="color: var(--text-secondary);">Loading templates...</p>';
   const templatesCollectionPath = `users/${currentUserId}/user_templates`;
   const q = query(collection(db, templatesCollectionPath), orderBy("createdAt", "desc"));
 
   try {
     const querySnapshot = await getDocs(q);
-    grid.innerHTML = ''; // Clear loading indicator
+    grid.innerHTML = ''; 
 
     if (querySnapshot.empty) {
       grid.innerHTML = `<p style="color: var(--text-secondary);">No saved templates yet. Click "Create Template" to start!</p>`;
@@ -409,15 +86,12 @@ async function loadUserTemplates() {
       const template = doc.data();
       const templateId = doc.id;
 
-      // Robust date handling
       let date = 'Date unknown';
       if (template.createdAt) {
         if (typeof template.createdAt.toDate === 'function') {
           date = template.createdAt.toDate().toLocaleDateString();
         } else if (template.createdAt.seconds) {
           date = new Date(template.createdAt.seconds * 1000).toLocaleDateString();
-        } else {
-          date = String(template.createdAt); // Fallback
         }
       }
 
@@ -435,9 +109,7 @@ async function loadUserTemplates() {
       `;
 
       card.addEventListener('click', () => {
-        // Prevent click if template data is invalid
         if (!template.design) {
-            console.error(`Template ${templateId} has invalid design data.`);
             alert("Error: Cannot load this template, data is missing.");
             return;
         }
@@ -454,14 +126,14 @@ async function loadUserTemplates() {
   }
 }
 
+// --- MODIFIED: loadLibraryTemplates now uses fetch() ---
 function loadLibraryTemplates() {
   const grid = document.querySelector('#library-templates .template-grid');
   if (!grid) {
       console.error("Library templates grid element not found.");
       return;
   }
-
-  grid.innerHTML = '';
+  grid.innerHTML = ''; 
 
   LIBRARY_TEMPLATES.forEach(template => {
     const card = document.createElement('div');
@@ -476,21 +148,35 @@ function loadLibraryTemplates() {
       </div>
     `;
 
-    card.addEventListener('click', () => {
-       // Prevent click if template data is invalid
-      if (!template.design) {
-            console.error(`Library template "${template.name}" has invalid design data.`);
-            alert("Error: Cannot load this library template, data is missing.");
-            return;
-        }
+    // --- NEW CLICK LOGIC ---
+    card.addEventListener('click', async () => {
       console.log(`Loading library template: ${template.name}`);
-      safeSetStorage('contactx_template_to_load', JSON.stringify(template.design));
-      window.location.href = 'editor.html';
+      
+      try {
+        // 1. Fetch the JSON file from the templates/ folder
+        const response = await fetch(template.designPath);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch template: ${response.statusText}`);
+        }
+        const designJson = await response.json();
+
+        // 2. Save the fetched JSON to storage
+        safeSetStorage('contactx_template_to_load', JSON.stringify(designJson));
+        
+        // 3. Go to the editor
+        window.location.href = 'editor.html';
+
+      } catch (e) {
+        console.error(`Error loading template "${template.name}":`, e);
+        alert(`Error: Could not load template. See console.`);
+      }
     });
 
     grid.appendChild(card);
   });
 }
+
+// --- (All other functions from here down are unchanged) ---
 
 function openSlideout(data) {
   if (slideoutPanel && appOverlay) {
@@ -526,8 +212,8 @@ function closeSlideout() {
 }
 
 function updateProfileUI(user) {
-  if (userNameEl) userNameEl.textContent = user.displayName || user.email || 'User'; // Added fallback
-  if (userEmailEl) userEmailEl.textContent = user.email || ''; // Handle missing email
+  if (userNameEl) userNameEl.textContent = user.displayName || user.email || 'User';
+  if (userEmailEl) userEmailEl.textContent = user.email || '';
   if (avatarEl) {
       const initial = user.displayName?.charAt(0) || user.email?.charAt(0) || '?';
       avatarEl.textContent = initial.toUpperCase();
@@ -541,26 +227,22 @@ function handleInitialView() {
 
   if (targetNavLink) {
     if (!targetNavLink.classList.contains('active')) {
-      // Defer click slightly to ensure all elements are ready
       setTimeout(() => targetNavLink.click(), 0);
     }
   } else {
-    // Fallback to dashboard
     setTimeout(() => document.querySelector('.nav-link[data-view="dashboard"]')?.click(), 0);
   }
 
-  // Initial Sidebar Collapse Logic (slightly delayed)
   setTimeout(() => {
     document.querySelectorAll('.projects-header').forEach(header => {
         const key = header.getAttribute('data-toggle');
         const list = document.getElementById('projects-' + key);
         const chevron = document.getElementById('chevron-' + key);
-        // Only collapse if it's currently expanded
         if (list && chevron && !list.classList.contains('collapsed')) {
-             header.click(); // Simulate click to trigger animation
+             header.click();
         }
     });
-  }, 150); // Increased delay slightly
+  }, 150);
 }
 
 
@@ -577,14 +259,12 @@ onAuthStateChanged(auth, (user) => {
   } else {
     console.log("No user logged in, redirecting to login page.");
     safeRemoveStorage('contactx_user_uid');
-    // Use replace to prevent back button going to blank dashboard
     window.location.replace('login.html');
   }
 });
 
 
 // --- 8. EVENT LISTENERS ---
-// Added checks to ensure elements exist before adding listeners
 
 // Sidebar Projects Collapse
 document.querySelectorAll('.projects-header').forEach(header => {
@@ -634,7 +314,6 @@ document.querySelectorAll('.nav-link').forEach(link => {
         opacity: 0, y: -10, duration: 0.2, ease: "power1.in",
         onComplete: () => {
           currentView.classList.add('hidden');
-          // Reset styles immediately
           currentView.style.opacity = '';
           currentView.style.transform = '';
         }
@@ -642,7 +321,6 @@ document.querySelectorAll('.nav-link').forEach(link => {
     }
 
     newView.classList.remove('hidden');
-    // Ensure starting styles are set before animating
     gsap.set(newView, { opacity: 0, y: 10 });
     gsap.to(newView,
       {
@@ -662,7 +340,6 @@ if (appOverlay) appOverlay.addEventListener('click', closeSlideout);
 
 document.querySelectorAll('.lead-row').forEach(row => {
   row.addEventListener('click', () => {
-    // TODO: Pass actual lead data based on row.dataset.leadId or similar
     openSlideout({ name: row.querySelector('.lead-name')?.textContent || 'Lead' });
   });
 });
@@ -695,19 +372,15 @@ if (createTemplateBtn) {
 // Logout Button
 if (logoutButton) {
   logoutButton.addEventListener('click', async () => {
-    console.log("Logout button clicked"); // Debugging line
+    console.log("Logout button clicked");
     try {
       await signOut(auth);
       safeRemoveStorage('contactx_user_uid');
-      window.location.replace('login.html'); // Use replace
+      window.location.replace('login.html');
     } catch (error) {
       console.error("Sign out error:", error);
     }
   });
 } else {
-    console.warn("Logout button not found."); // Add warning if element is missing
+    console.warn("Logout button not found.");
 }
-
-
-
-
