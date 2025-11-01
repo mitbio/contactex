@@ -475,10 +475,31 @@
     function handleAuthSuccess(user) {
       console.log("Auth success! User:", user.uid);
       
-      // ** MODIFIED: Use the safe function **
-      safeSetStorage('contactx_user_uid', user.uid);
+      // 1. Save to localStorage for the web app
+      localStorage.setItem('contactx_user_uid', user.uid);
       
-      // Redirect to the main app dashboard
+      // 2. --- NEW: Send a message to the Chrome Extension ---
+      // We must check if the extension is installed
+      const EXTENSION_ID = "YOUR_EXTENSION_ID_HERE"; // Get this from chrome://extensions
+      try {
+        chrome.runtime.sendMessage(EXTENSION_ID, {
+          type: "AUTH_SUCCESS",
+          user: {
+            uid: user.uid,
+            email: user.email
+          }
+        }, (response) => {
+          if (chrome.runtime.lastError) {
+            console.warn("Could not send message to extension. Is it installed?", chrome.runtime.lastError.message);
+          } else {
+            console.log("Auth data sent to extension:", response);
+          }
+        });
+      } catch (e) {
+        console.warn("Could not connect to extension. Is it installed?", e);
+      }
+      
+      // 3. Redirect to the main app dashboard
       window.location.href = 'index.html'; 
     }
     
